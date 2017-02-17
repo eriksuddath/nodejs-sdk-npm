@@ -1,5 +1,5 @@
 import rp from 'request-promise';
-import { BASE } from './const';
+import { BASE, PING, LANGUAGES, COUNTRIES, V_consumerKey, V_organizationId, V_projectId } from './const';
 import request from 'request';
 import Organization from './organization';
 import Project from './project';
@@ -8,14 +8,20 @@ import Tm from './tm';
 
 class App {
 	constructor(options) {
-
 		this._validate(options);
 		this._init(options);
-
 	}
 
 	_validate(options) {
-		// validate each key here or throw error, not safe to deconstruct
+		const keys = Object.keys(options);
+		
+		const validate = {
+			consumerKey: () => V_consumerKey(options.consumerKey),
+			organizationId: () => V_organizationId(options.organizationId),
+			projectId: () => V_projectId(options.projectId)
+		}
+		
+		keys.forEach( key => validate[key]() )
 	}
 
 	_init({ consumerKey, organizationId, projectId }) {
@@ -24,7 +30,6 @@ class App {
 		this.organization = new Organization(this._config, this._transformResponse);
 		this.project = new Project(this._config, this._transformResponse);
 		this.file = new File(this._config, this._transformResponse);
-		// this.tm = new Tm(this._config, this._transformResponse);
 
 	}
 
@@ -39,7 +44,7 @@ class App {
 		const { consumerKey } = this._config;
 
 		var options = {
-      url: `${BASE}/ping`,
+      url: `${BASE}/${PING}`,
       headers: { consumerKey },
      	resolveWithFullResponse: true
     };
@@ -51,7 +56,7 @@ class App {
 		const { consumerKey } = this._config;
 
 		var options = {
-		  url: `${BASE}/languages`,
+		  url: `${BASE}/${LANGUAGES}`,
 		  headers: { consumerKey }
 		};
 
@@ -64,7 +69,7 @@ class App {
 		const { consumerKey } = this._config;
 
 		var options = {
-		  url: `${BASE}/countries`,
+		  url: `${BASE}/${COUNTRIES}`,
 		  headers: { consumerKey }
 		};
 

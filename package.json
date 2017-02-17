@@ -4,7 +4,7 @@
   "description": "a javascript sdk for the qordoba v2 api",
   "main": "index.js",
   "scripts": {
-    "test": "gulp build && mocha --timeout 40000"
+    "test": "gulp build && mocha --timeout 60000"
   },
   "author": "Erik Suddath <erik.suddath@gmail.com>",
   "license": "MIT",

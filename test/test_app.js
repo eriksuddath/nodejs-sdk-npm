@@ -6,7 +6,7 @@ const { consumerKey, organizationId, projectId, base } = require('./test_config'
 
 const app = new App({ consumerKey, organizationId, projectId });
 
-describe('app', () => {
+xdescribe('app', () => {
 
 	describe('ping', () => {
 

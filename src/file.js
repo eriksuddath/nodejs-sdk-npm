@@ -11,12 +11,21 @@ import {
 	FILE_UPDATE, 
 	FILE_SEGMENTS,
 	FILE_SEGMENT,
-	FILE_JSON
+	FILE_JSON,
+	V_languageId,
+	V_filesUpload,
+	V_fileUpdate,
+	V_fileIds,
+	V_fileId,
+	V_segmentId,
+	V_milestoneId
 } from './const';
 
 import { LANG_CODES } from './lang_codes';
 
 import App from './App';
+
+const x_auth_token = '2e6ed10f-cf65-4fe9-9067-a714a8849d85';
 
 
 class File {
@@ -24,123 +33,89 @@ class File {
 		this._config = config;
 		this._transformResponse = transformResponse;
 	}
-
-	_getLangId(code) {
-		return LANG_CODES[code] !== undefined ? LANG_CODES[code] : code;
+	/**
+	* converts languageCode ('es-mx') into a languageId (222)
+	*/
+	_getLangId(languageCode) {
+		return LANG_CODES[languageCode] !== undefined ? LANG_CODES[languageCode] : languageCode;
 	}
-
+	/**
+	* validates keys before request
+	*/
 	_validate(options) {
 		const keys = Object.keys(options);
-		
+
 		const validate = {
-			languageId: () => {
-				const { languageId } = options;
-				if (typeof languageId === 'number' && String(languageId).length <= 3) { return true; }
-  			if (typeof languageId === 'string' && languageId[2] === '-') { return true; }
-				throw Error('languageId must be a valid string code or number');
-			},
-			filesUpload: () => {
-				const { filesUpload } = options;
-				if (Array.isArray(filesUpload) && typeof filesUpload[0].path === 'string') { return true; }
-				if (typeof filesUpload === 'object' && typeof filesUpload.path === 'string') { return true; }
-				throw Error('filesUpload must be a valid object or array of objects');
-			},
-			filesUpdate: () => {
-				const { filesUpdate } = options;
-				if (Array.isArray(filesUpdate) && typeof filesUpdate[0].path === 'string' && typeof filesUpdate[0].fileId === 'number') { return true; }
-				if (typeof filesUpdate === 'object' && typeof filesUpdate.path === 'string' && typeof filesUpdate.fileId === 'number') { return true; }
-				throw Error('filesUpdate must be a valid object or array of objects');
-			},
-			fileIds: () => {
-				const { fileIds } = options;
-				if (Array.isArray(fileIds) && fileIds.every( el => typeof el === 'number' ) ) { return true; }
-				if (typeof fileIds === 'number' && String(fileIds).length === 6 ) { return true; }
-				throw Error('must be a valid fileId or array of valid fileIds');
-			},
-			fileId: () => {
-				const { fileId } = options;
-				if (typeof fileId === 'number' && String(fileId).length === 6 ) { return true; }
-				throw Error('must be a valid six digit fileId')
-			},
-			segmentId: () => {
-				const { segmentId } = options;
-				if (typeof segmentId === 'number' ) { return true; }
-				throw Error('must be a valid numberic segmentId')
-			},
-			milestoneId: () => {
-				const { milestoneId } = options;
-				if (typeof milestoneId === 'number' && String(milestoneId).length === 4) { return true; }
-				throw Error('must be a valid 4 digit numeric milestoneId')
-			}
+			languageId: () => V_languageId(options.languageId),
+			filesUpload: () => V_filesUpload(options.filesUpload),
+			fileUpdate: () => V_fileUpdate(options.fileUpdate),
+			fileIds: () => V_fileIds(options.fileIds),
+			fileId: () => V_fileId(options.fileId),
+			segmentId: () => V_segmentId(options.segmentId),
+			milestoneId: () => V_milestoneId(options.milestoneId)
 		}
 		
 		keys.forEach( key => validate[key]() )
 	}
-
-	list(languageId, custom = {}) {
+	/**
+	* returns a list of project files for a given target languageId or languageCode
+	* @params {number|string}     languageId | languageCode			The id of target language
+	* @param {object}     custom     Custom object with keys explained below: (optional)
+  *   @param {number}     custom.offset        Number of files to skip before starting the list (optional, default: 0)
+  *   @param {number}     custom.limit     Maximum number of files to list (optional, default: 100)
+  *   @param {number}     custom.fullResponse        Forces return of full response (optional, default: false)
+	* @return {Promise} A Promise that is fulfilled with the API response or rejected with an error
+	*/
+	list(languageId, custom = { offset: 0, limit: 100, fullResponse: false  }) {
 		this._validate({ languageId });
+
 		languageId = this._getLangId(languageId);
+
 		const { consumerKey, projectId } = this._config;
+		const { offset, limit, fullResponse } = custom;
 
 		var options = { 
 		  url: `${BASE}/${FILE_LISTFILES}`,
-		  headers: 
-		   { consumerKey, languageId, projectId, 'content-type': 'application/json' },
+		  headers: { consumerKey, languageId, projectId, 'content-type': 'application/json' },
+		  qs: { offset, limit },
+		  resolveWithFullResponse: fullResponse,
 		  body: {},
 		  json: true 
 		};
 
-		Object.assign(options, custom);
-
 		return rp.post(options).then(this._transformResponse);
 	}
-
-	types(custom = {}) {
+	/**
+	* returns a list of the file types in a project
+	* @param {object}     custom     Custom object with keys explained below: (optional)
+  *   @param {number}     custom.fullResponse        Forces return of full response (optional, default: false)
+	* @return {Promise} A Promise that is fulfilled with the API response or rejected with an error
+	*/
+	types(custom = { fullResponse: false  }) {
 		const { consumerKey, projectId } = this._config;
+		const { fullResponse } = custom;
 
 		var options = { 
 		  url: `${BASE}/${FILE_TYPES}`,
-		  headers: 
-		   { consumerKey, projectId }
+		  headers: { consumerKey, projectId },
+		  resolveWithFullResponse: fullResponse
 		};
-
-		Object.assign(options, custom);
 
 		return rp.get(options).then(this._transformResponse);
 	}
-	/*
-	================================
-	Old one - only supports one file
-	================================
 
-	upload(file, custom = {}) {
-
-		const { consumerKey, organizationId, projectId } = this._config;
-		const { path, versionTag, type } = file;
-
-		var options = { 
-		  url: `${BASE}/${FILE_UPLOAD}`,
-		  qs: { type },
-		  headers: { versionTag, projectId, organizationId, consumerKey, 'content-type': 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' },
-		  formData: { 
-		    file: fs.createReadStream(path),
-		    file_names: '[]'
-		  }
-		};
-
-		Object.assign(options, custom);
-
-		return rp.post(options).then(this._transformResponse);
-	}
+	/**
+	* returns a list of the file types in a project
+	* @params {object|array}     filesUpload			A file object or array of file objects { path, type } || [{ path, type}, { path, type }...]
+  *   @param {string}     some_file_object.path        System path to target file
+  *   @param {string}     some_file_object.type        Type of file to uplaod
 	*/
-
-	upload(filesUpload, custom = {}) {
+	upload(filesUpload) {
 		/*
 			ALPHA ROUTE: NEED TO UPDATE TO APIGEE
 		*/
 		this._validate({ filesUpload })
 		const { consumerKey, organizationId, projectId } = this._config;
-		const x_auth_token = '2e6ed10f-cf65-4fe9-9067-a714a8849d85';
 		
 		const allOptions = [].concat(filesUpload).map( (file) => {
 			const { path, type } = file;
@@ -154,8 +129,6 @@ class File {
 			    file_names: '[]'
 			  }
 			};
-
-			Object.assign(options, custom);
 
 			return options;
 		});
@@ -204,7 +177,6 @@ class File {
 					return files_ids.map((fileId, index) => {
 						const version = versions[index];
 						const filename = filenames[index];
-						console.log('versions', versions)
 						return Object.assign({}, { fileId, filename, versionTag: version });
 					})
 			 	})
@@ -228,11 +200,19 @@ class File {
 			return `${newMain}.${newSub}`;
 		}
 	}
-
-	export(languageId, fileIds, custom = {}) {
+	/**
+	* returns a link for downloading a .zip file that contains project files for a specified page and target language
+	* @params {number|string}     languageId | languageCode			The id of target language
+	* @params {string|array}     fileIds			Ids of files to export
+	* @param {object}     custom     Custom object with keys explained below: (optional)
+  *   @param {number}     custom.fullResponse        Forces return of full response (optional, default: false)
+	*/
+	export(languageId, fileIds, custom = { fullResponse: false }) {
 		this._validate({ languageId, fileIds });
 
 		languageId = this._getLangId(languageId);
+		const { fullResponse } = custom;
+
 		if (Array.isArray(fileIds)) { fileIds = fileIds.join(',') }
 		const { consumerKey, projectId } = this._config;
 
@@ -240,125 +220,106 @@ class File {
       url: `${BASE}/${FILE_EXPORT}`,
       headers: 
        { consumerKey, projectId, fileIds, targetLanguageIds: languageId },
+		  resolveWithFullResponse: fullResponse,
       body: {},
       json: true 
     };
 
-		Object.assign(options, custom);
-
 		return rp.post(options).then(this._transformResponse);
 	}	
-
-	// update(files, custom = {}) {
-	// 	const { consumerKey, projectId } = this._config;
-
-	// 	const allOptions = files.map((file) => {
-	// 		const { path, fileId } = file;
-	// 		const option = { 
-	// 		  url: `${BASE}/${FILE_UPDATE}`,
-	// 		  headers: { consumerKey, projectId, fileId, 'content-type': 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' },
-	// 		  formData: { 
-	// 		    file: fs.createReadStream(path)
-	// 	  	}
-	// 	  };
-	// 	  return Object.assign(option, custom);
-	// 	})
-
-	// 	return Promise.all(allOptions.map(options => rp.post(options).then(this._transformResponse)));
-	// }
-
-	update(filesUpdate, custom = {}) {
-		this._validate({ filesUpdate });
+	/**
+	* updates a file in a project - parallel updates are not supported
+	* @params {object}     fileUpdate			A file object { path, fileId }
+	  *   @param {string}     some_file_object.path        Path to target file
+	  *   @param {string}     some_file_object.fileId        Id of file to update
+	* @param {object}     custom     Custom object with keys explained below: (optional)
+  *   @param {number}     custom.fullResponse        Forces return of full response (optional, default: false)
+	*/
+	update(fileUpdate, custom = { fullResponse: false }) {
+		this._validate({ fileUpdate })
 
 		const { consumerKey, projectId } = this._config;
-		const x_auth_token = '2e6ed10f-cf65-4fe9-9067-a714a8849d85';
-		const fileObjs = [].concat(filesUpdate);
+		const { fullResponse } = custom;
+		const { path, fileId } = fileUpdate;
 
-		const allOptions = fileObjs.map((file) => {
-			const { path, fileId } = file;
-			const options = { 
-    		url: `https://app.qordoba.com/api/projects/${projectId}/files/${fileId}/update/upload`,
-    		headers: { 
-       		'x-auth-token': x_auth_token,
-       		'content-type': 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' },
-    		formData: { 
-      		file: fs.createReadStream(path)
-    		}
-  		};
-		  return Object.assign(options, custom);
-		})
+		const options = { 
+		  url: `${BASE}/${FILE_UPDATE}`,
+		  headers: { consumerKey, projectId, fileId, 'content-type': 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' },
+		  resolveWithFullResponse: fullResponse,
+		  formData: { 
+		    file: fs.createReadStream(path)
+	  	}
+	  };
 
-		return Promise.all(allOptions.map(options => rp.post(options).then(this._transformResponse)))
-			.then( (files) => {
-				const allOptions = files.map( (file, index) => {
-					const { id } = file;
-					const fileId = fileObjs[index].fileId;
-					var options = { 
-					  url: `https://app.qordoba.com/api/projects/${projectId}/files/${fileId}/update/apply`,
-					  headers: { 
-					     'content-type': 'application/json',
-					     'x-auth-token': x_auth_token },
-					  body: {
-					  'new_file_id': `${id}`,
-					  'keep_in_project': false 
-						},
-					  json: true 
-					};
-					return Object.assign(options, custom);
-				})
-
-				let updateQueue = Promise.resolve();
-				const delay = () => new Promise(resolve => setTimeout(resolve, 7000));
-				const results = [];
-
-				allOptions.forEach(options => {
-					updateQueue = updateQueue.then(delay)
-						.then(() => rp.put(options))
-						.then(this._transformResponse)
-						.then(body => results.push(body))
-				})
-
-				return Promise.resolve(updateQueue).then(() => results);
-
-			})
-	}	
-
-	segments(languageId, fileId, custom = {}) {
+		return rp.post(options).then(this._transformResponse);
+	}
+	/**
+	* returns a list or filtered list of the segments in a file
+	* @params {number|string}     languageId | languageCode			The id of target language
+	* @params {number}     fileId			The id of the file to retrieve segments
+	* @param {object}     custom     Custom object with keys explained below: (optional)
+  *   @param {number}     custom.offset        Number of files to skip before starting the list (optional, default: 0)
+  *   @param {number}     custom.limit     Maximum number of files to list (optional, default: 100)
+  *   @param {string}     custom.search     The search term (optional, default: none)
+  *   @param {number}     custom.fullResponse        Forces return of full response (optional, default: false)
+	*/
+	segments(languageId, fileId, custom = { offset: 0, limit: 100, fullResponse: false }) {
 		this._validate({ languageId, fileId });
 
 		languageId = this._getLangId(languageId);
+
 		const { consumerKey, projectId } = this._config;
+		const { offset, limit, fullResponse } = custom;
 
 		var options = { 
 		  url: `${BASE}/${FILE_SEGMENTS}`,
 		  headers: { consumerKey, projectId, languageId, fileId },
+		  qs: { offset, limit },
+		  resolveWithFullResponse: fullResponse
 		}
 
-		Object.assign(options, custom);
+		// assign filter and search params to qs if passed
+		if (custom.filter) { Object.assign(options.qs, { filter: custom.filter }) }
+		if (custom.search) { Object.assign(options.qs, { search: custom.search }) }
 
 		return rp.get(options).then(this._transformResponse);
 	}
-
-	segment(languageId, fileId, segmentId, custom = {}) {
+	/**
+	* returns a file segment by its id
+	* @params {number|string}     languageId | languageCode			The id of target language
+	* @params {number}     fileId			The id of the file to retrieve segments
+	* @params {number}     segmentId			The id of segment
+	* @param {object}     custom     Custom object with keys explained below: (optional)
+  *   @param {number}     custom.fullResponse        Forces return of full response (optional, default: false)
+	*/
+	segment(languageId, fileId, segmentId, custom = { fullResponse: false }) {
 		this._validate({ languageId, fileId, segmentId });
 
 		languageId = this._getLangId(languageId);
+
 		const { consumerKey, projectId } = this._config;
+		const { fullResponse } = custom;
 
 		var options = { 
 		  url: `${BASE}/${FILE_SEGMENT}`,
 		  headers: { consumerKey, projectId, languageId, segmentId, fileId },
+		  resolveWithFullResponse: fullResponse
 		}
-
-		Object.assign(options, custom);
 
 		return rp.get(options).then(this._transformResponse);
 	}
-
-	json(languageId, milestoneId, fileIds, custom = {}) {
+	/**
+	* returns json object of key value pairs 
+	* @params {number|string}     languageId | languageCode			The id of target language
+	* @params {number}     milestoneId		The id of the milestone to get json from (see app.project.milestone)
+	* @params {number}     fileId			The id of the file to retrieve segments
+	* @params {number}     segmentId			The id of segment
+	*/
+	json(languageId, milestoneId, fileIds) {
 		this._validate({ languageId, milestoneId, fileIds });
 
 		languageId = this._getLangId(languageId);
+
 		const { consumerKey, projectId } = this._config;
 
 		// handle multiple fileIds
@@ -368,12 +329,50 @@ class File {
 		  	headers: { consumerKey, projectId, languageId, fileId, milestoneId },
 			}
 
-			Object.assign(options, custom);
-
 			return options;
 		});
 		
 		return Promise.all(allOptions.map(options => rp.get(options).then(this._transformResponse)))
+	}
+	/**
+	* returns array of most version of files by target language
+	* @params {number|string}     languageId | languageCode			The id of target language
+	* @param {object}     custom     Custom object with keys explained below: (optional)
+  *   @param {number}     custom.fullResponse        Forces return of full response (optional, default: false)
+	*/
+	recent(languageId, custom = { offset: 0, limit: 100, fullResponse: false }) {
+		this._validate({ languageId });
+		languageId = this._getLangId(languageId);
+
+		const { consumerKey, projectId } = this._config;
+		const { offset, limit, fullResponse } = custom;
+
+	  var options = { 
+	    method: 'POST',
+	    url: 'https://api.qordoba.com/v2/files/list',
+	    qs: { limit, offset },
+	    headers: { consumerKey, languageId, projectId, 'content-type': 'application/json' },
+		  resolveWithFullResponse: fullResponse,
+	    body: {},
+	    json: true 
+	  };
+
+  	return rp(options)
+  		.then(this._transformResponse)
+	    .then( (body) => {
+		      const files = body.reduce((obj, { fileName, fileId, updated }) => {
+		      	const filename = fileName;
+		        if (obj[filename] === undefined) { obj[filename] = { filename, updated, fileId }; }
+		        
+		        if (updated > obj[filename]['updated']) {
+		          obj[filename] = { filename, updated, fileId };
+		        }
+		        
+		        return obj
+		      }, {})
+
+		      return Object.values(files);
+	    })
 	}
 
 }

@@ -9,12 +9,13 @@ const app = new App({ consumerKey, organizationId, projectId });
 describe('file', () => {
 
 	let fileIds, segmentId, uploadedFiles;
-	describe('list files', () => {
+	xdescribe('list files', () => {
 
 		it('should return a list of project files for a given target language', (done) => {
 			app.file.list(languageId)
 			.then( (files) => {
 				expect(files).to.be.a('array');
+				expect(files.length).to.be.within(0,100);
 				if (files.length > 0) {
 				  const file = files[0];
 				  expect(file.fileId).to.exist;
@@ -29,12 +30,40 @@ describe('file', () => {
 			})
 		})
 
+		it('should accept a custom limit and offset', (done) => {
+			const limit = 200;
+			const offset = 0;
+			app.file.list(languageId, { limit, offset })
+			.then( (files) => {
+				expect(files).to.be.a('array');
+				expect(files.length).to.be.within(0,200);
+				done()
+			})
+			.catch(err => {
+				expect(err).to.not.exist
+				done()
+			})
+		})
+
+		it('should accept option to return full response', (done) => {
+			app.file.list(languageId, { fullResponse: true })
+			.then( ({ body, statusCode }) => {
+				expect(statusCode).to.exist;
+				expect(statusCode).to.eql(200);
+				done()
+			})
+			.catch(err => {
+				expect(err).to.not.exist
+				done()
+			})
+		})
+
 	})
 
-	describe('list file types', () => {
+	xdescribe('list file types', () => {
 
 		it('should return a list of the file types in a project', (done) => {
-			app.file.types(languageId)
+			app.file.types()
 			.then( (types) => {
         const type = types[0];
         expect(types).to.be.a('array');
@@ -49,35 +78,23 @@ describe('file', () => {
 			})
 		})
 
+		it('should accept option to return full response', (done) => {
+			app.file.types({ fullResponse: true })
+			.then( ({ body, statusCode }) => {
+	      expect(statusCode).to.exist;
+				expect(statusCode).to.eql(200);
+				done()
+			})
+			.catch(err => {
+				console.log(err)
+				expect(err).to.not.exist
+				done()
+			})
+		})
+
 	})
 
-	// describe('upload file', () => {
-	// 	const file = {
-	// 		path: __dirname + '/mockFiles/uploadFile.json',
-	// 		version: '1.0.0',
-	// 		type: 'JSON'
-	// 	}
-		
-
-	// 	it('should upload files to a project', (done) => {
-	// 		app.file.upload(file)
-	// 		.then( ({ result, files_ids }) => {
- //        // for use in next test
- //        fileIds = files_ids;
-
- //        expect(result).to.eql('success');
- //        expect(files_ids).to.be.a('array');
-	// 			done()
-	// 		})
-	// 		.catch(err => {
-	// 			expect(err).to.not.exist
-	// 			done()
-	// 		})
-	// 	})
-
-	// })
-
-	describe('upload files', () => {
+	xdescribe('upload files', () => {
 		const files = [{
 			path: __dirname + '/mockFiles/test000.json',
 			type: 'JSON'
@@ -91,13 +108,15 @@ describe('file', () => {
 			const file = files[0];
 
 			app.file.upload(file)
-			.then( (body) => {
-				console.log(body)
-				fileIds = body[0].fileId;
-				console.log('fileId', fileIds)
-        // expect(result).to.eql('success');
-        // expect(files_ids).to.be.a('array');
-        // add delay to prevent error on next test
+			.then( (files) => {
+				const file = files[0];
+        expect(files).to.be.a('array');
+        expect(file.fileId).to.be.a('number');
+        expect(file.filename).to.be.a('string');
+        expect(file.versionTag).to.be.a('string');
+				// save a file id for later test
+				fileIds = file.fileId;
+				console.log('Adding 10 second timeout to prevent server error')
 				setTimeout(done, 10000);
 			})
 			.catch(err => {
@@ -109,11 +128,10 @@ describe('file', () => {
 
 		it('should bulk upload a group of files', (done) => {
 			app.file.upload(files)
-			.then( (body) => {
-				console.log(body)
-				uploadedFiles = body;
-        // expect(result).to.eql('success');
-        // expect(files_ids).to.be.a('array');
+			.then( (files) => {
+        expect(files).to.be.a('array');
+				expect(files.length).to.eql(2);
+				uploadedFiles = files;
 				done()
 			})
 			.catch(err => {
@@ -125,7 +143,7 @@ describe('file', () => {
 
 	})
 
-	describe('export files', () => {
+	xdescribe('export files', () => {
 
 		it('should return a link for downloading a .zip file that contains project files', (done) => {
 			app.file.export(languageId, fileIds)
@@ -145,7 +163,6 @@ describe('file', () => {
 
 			app.file.export(languageId, fileIds)
 			.then( ({ downloadLink }) => {
-				console.log('dl', downloadLink)
         expect(downloadLink).to.exist;
 				done()
 			})
@@ -158,31 +175,30 @@ describe('file', () => {
 
 	})
 
-	describe('update file', () => {
+	xdescribe('update file', () => {
+		it('should update a file', (done) => {
+			const uploadedFile = uploadedFiles[0];
+			const file = {
+				path: `${__dirname}/mockFiles/${uploadedFile.filename}`,
+				fileId: uploadedFile.fileId
+			}
 
-		it('should handle updating multiple files', (done) => {
-			const files = uploadedFiles.map((file) => {
-				return {
-					path: `${__dirname}/mockFiles/${file.filename}`,
-					fileId: file.fileId
-				}
-			})
-
-			app.file.update(files)
-			.then(body => {
-				console.log(body)
+			app.file.update(file)
+			.then( ({ result, files_ids }) => {
+				expect(result).to.eql('success');
+				expect(files_ids).to.be.a('array');
 				done()
 			})
 			.catch(err => {
 				console.log(err)
-				// expect(err).to.not.exist
+				expect(err).to.not.exist
 				done()
 			})
 		})
 
 	})
 
-	describe('list file segments', () => {
+	xdescribe('list file segments', () => {
 
 		it('should list segments in a file', (done) => {
 			const languageId = 222;
@@ -198,7 +214,42 @@ describe('file', () => {
 				expect(firstSegment).to.exist;
 				expect(firstSegment.segmentId).to.be.a('number');
 				segmentId = firstSegment.segmentId;
+				console.log(segmentId)
 
+				done()
+			})
+			.catch(err => {
+				console.log(err)
+				expect(err).to.not.exist
+				done()
+			})
+		})
+
+		it('should accept custom limit', (done) => {
+			const languageId = 222;
+			const fileId = 738099;
+
+			app.file.segments(languageId, fileId, { limit: 1 })
+			.then( ({ segments }) => {
+				expect(segments).to.be.a('array');
+				expect(segments.length).to.eql(1);
+				done()
+			})
+			.catch(err => {
+				console.log(err)
+				expect(err).to.not.exist
+				done()
+			})
+		})
+
+		it('should accept custom search', (done) => {
+			const languageId = 222;
+			const fileId = 738099;
+
+			app.file.segments(languageId, fileId, { search: 'test' })
+			.then( ({ segments }) => {
+				expect(segments).to.be.a('array');
+				expect(segments[0].segment).to.eql('test segment')
 				done()
 			})
 			.catch(err => {
@@ -210,10 +261,11 @@ describe('file', () => {
 
 	})
 
-	describe('show file segments', () => {
+	xdescribe('show file segment', () => {
 
 		it('should show details of a segment in a file', (done) => {
 			const fileId = 738099;
+			const segmentId = 94177257;
 
 			app.file.segment(languageId, fileId, segmentId)
 			.then( ({ lastSaved, segmentId, segment }) => {
@@ -264,5 +316,26 @@ describe('file', () => {
 				done()
 			})
 		})
+	})
+
+	describe('most recent', () => {
+
+		it('should return most recent files', (done) => {
+			const limit = 1000;
+			app.file.recent(languageId, { limit })
+			.then( (files) => {
+				expect(files).to.be.a('array');
+				const filenames = files.map( file => file.filename );
+				const uniqueFilenames = [ ...new Set(filenames) ];
+				expect(filenames.length).to.eql(uniqueFilenames.length);
+				done()
+			})
+			.catch(err => {
+				console.log(err)
+				expect(err).to.not.exist
+				done()
+			})
+		})
+
 	})
 })
