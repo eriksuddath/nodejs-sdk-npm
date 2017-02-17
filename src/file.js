@@ -31,36 +31,46 @@ class File {
 
 	_validate(options) {
 		const keys = Object.keys(options);
+		
 		const validate = {
 			languageId: () => {
 				const { languageId } = options;
-				if (typeof languageId === 'number' && String(languageId).length <= 3) { return; }
-  			if (typeof languageId === 'string' && languageId[2] === '-') { return; }
-				throw Error('languageId must be a valid string code or number')
+				if (typeof languageId === 'number' && String(languageId).length <= 3) { return true; }
+  			if (typeof languageId === 'string' && languageId[2] === '-') { return true; }
+				throw Error('languageId must be a valid string code or number');
 			},
 			filesUpload: () => {
 				const { filesUpload } = options;
-				console.log('filesUpload', filesUpload)
+				if (Array.isArray(filesUpload) && typeof filesUpload[0].path === 'string') { return true; }
+				if (typeof filesUpload === 'object' && typeof filesUpload.path === 'string') { return true; }
+				throw Error('filesUpload must be a valid object or array of objects');
 			},
 			filesUpdate: () => {
 				const { filesUpdate } = options;
-				console.log('filesUpdate', filesUpdate)
+				if (Array.isArray(filesUpdate) && typeof filesUpdate[0].path === 'string' && typeof filesUpdate[0].fileId === 'number') { return true; }
+				if (typeof filesUpdate === 'object' && typeof filesUpdate.path === 'string' && typeof filesUpdate.fileId === 'number') { return true; }
+				throw Error('filesUpdate must be a valid object or array of objects');
 			},
 			fileIds: () => {
 				const { fileIds } = options;
-				console.log('fileIds', fileIds)
+				if (Array.isArray(fileIds) && fileIds.every( el => typeof el === 'number' ) ) { return true; }
+				if (typeof fileIds === 'number' && String(fileIds).length === 6 ) { return true; }
+				throw Error('must be a valid fileId or array of valid fileIds');
 			},
 			fileId: () => {
 				const { fileId } = options;
-				console.log('fileId', fileId);
+				if (typeof fileId === 'number' && String(fileId).length === 6 ) { return true; }
+				throw Error('must be a valid six digit fileId')
 			},
 			segmentId: () => {
 				const { segmentId } = options;
-				console.log('segmentId', segmentId)
+				if (typeof segmentId === 'number' ) { return true; }
+				throw Error('must be a valid numberic segmentId')
 			},
 			milestoneId: () => {
 				const { milestoneId } = options;
-				console.log('milestoneId', milestoneId)
+				if (typeof milestoneId === 'number' && String(milestoneId).length === 4) { return true; }
+				throw Error('must be a valid 4 digit numeric milestoneId')
 			}
 		}
 		
