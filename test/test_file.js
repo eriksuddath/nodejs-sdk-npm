@@ -6,7 +6,7 @@ const { consumerKey, organizationId, projectId, languageId, milestoneId } = requ
 
 const app = new App({ consumerKey, organizationId, projectId });
 
-xdescribe('file', () => {
+describe('file', () => {
 
 	let fileIds, segmentId, uploadedFiles;
 	describe('list files', () => {
