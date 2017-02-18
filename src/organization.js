@@ -10,16 +10,21 @@ class Organization {
 		this._config = config;
 		this._transformResponse = transformResponse;
 	}
-
-	team(custom = {}) {
+	/**
+	* returns information about your organization's team members
+	* @return {Promise} A Promise that is fulfilled with the API response or rejected with an error
+	* @param {object}     custom     Custom object with keys explained below: (optional)
+  *   @param {number}     custom.fullResponse        Forces return of full response (optional, default: false)
+	*/
+	team(custom = { fullResponse: false }) {
 		const { consumerKey, organizationId } = this._config;
+		const { fullResponse } = custom;
 
 		var options = {
 		  url: `${BASE}/${ORG_TEAM}`,
-		  headers: { consumerKey, organizationId }
+		  headers: { consumerKey, organizationId },
+		  resolveWithFullResponse: fullResponse
 		};
-
-		Object.assign(options, custom);
 
 		return rp.get(options).then(this._transformResponse);
 	}

@@ -24,6 +24,18 @@ xdescribe('organization', () => {
 			})
 		})
 
+		it('should return full response', (done) => {
+			app.organization.team({ fullResponse: true })
+			.then( ({ statusCode }) => {
+	      expect(statusCode).to.eql(200);
+				done()
+			})
+			.catch( (err) => {
+				expect(err).to.not.exist
+				done()
+			})
+		})
+
 	})
 
 })

@@ -6,12 +6,12 @@ const { consumerKey, organizationId, projectId, base } = require('./test_config'
 
 const app = new App({ consumerKey, organizationId, projectId });
 
-xdescribe('app', () => {
+describe('app', () => {
 
 	describe('ping', () => {
 
 		it('should return a status of 200', (done) => {
-			app.ping({ resolveWithFullResponse: true })
+			app.ping({ fullResponse: true })
 			.then( ({ statusCode }) => {
 				expect(statusCode).to.eql(200);
 				done()
@@ -27,7 +27,7 @@ xdescribe('app', () => {
 	describe('languages', () => {
 
 		it('should return a list of languages', (done) => {
-			app.languages({ resolveWithFullResponse: true })
+			app.languages({ fullResponse: true })
 			.then( ({ body, statusCode }) => {
 				const data = JSON.parse(body);
 

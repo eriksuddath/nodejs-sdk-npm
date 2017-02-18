@@ -11,7 +11,9 @@ class App {
 		this._validate(options);
 		this._init(options);
 	}
-
+	/**
+	* validates keys before initialization
+	*/
 	_validate(options) {
 		const keys = Object.keys(options);
 		
@@ -23,7 +25,9 @@ class App {
 		
 		keys.forEach( key => validate[key]() )
 	}
-
+	/**
+	* initializes configuration and organization, project and file classes
+	*/
 	_init({ consumerKey, organizationId, projectId }) {
 		this._config = { consumerKey, organizationId, projectId };
 
@@ -32,48 +36,66 @@ class App {
 		this.file = new File(this._config, this._transformResponse);
 
 	}
-
+	/**
+	* transforms any json response into a javascript object
+	*/
 	_transformResponse(res) {
 		if (typeof res === 'string') {
 			return JSON.parse(res);
 		}
 		return res;
 	}
-
-	ping() {
+	/**
+	* returns the status of the Qordoba API
+	* @return {Promise} A Promise that is fulfilled with the API response or rejected with an error
+	* @param {object}     custom     Custom object with keys explained below: (optional)
+  *   @param {number}     custom.fullResponse        Forces return of full response (optional, default: false)
+	*/
+	ping(custom = { fullResponse: false }) {
 		const { consumerKey } = this._config;
+		const { fullResponse } = custom;
 
 		var options = {
       url: `${BASE}/${PING}`,
       headers: { consumerKey },
-     	resolveWithFullResponse: true
+		  resolveWithFullResponse: fullResponse
     };
 
     return rp.get(options).then(this._transformResponse)
 	}
-
-	languages(custom = {}) {
+	/**
+	* returns detail about the language detail for Qordoba
+	* @return {Promise} A Promise that is fulfilled with the API response or rejected with an error
+	* @param {object}     custom     Custom object with keys explained below: (optional)
+  *   @param {number}     custom.fullResponse        Forces return of full response (optional, default: false)
+	*/
+	languages(custom = { fullResponse: false }) {
 		const { consumerKey } = this._config;
+		const { fullResponse } = custom;
 
 		var options = {
 		  url: `${BASE}/${LANGUAGES}`,
-		  headers: { consumerKey }
+		  headers: { consumerKey },
+		  resolveWithFullResponse: fullResponse
 		};
-
-		Object.assign(options, custom);
 
 		return rp.get(options).then(this._transformResponse);
 	}
-
-	countries(custom = {}) {
+	/**
+	* returns detail about the country list for Qordoba
+	* @return {Promise} A Promise that is fulfilled with the API response or rejected with an error
+	* @param {object}     custom     Custom object with keys explained below: (optional)
+  *   @param {number}     custom.fullResponse        Forces return of full response (optional, default: false)
+	*/
+	countries(custom = { fullResponse: false }) {
 		const { consumerKey } = this._config;
+		const { fullResponse } = custom;
 
 		var options = {
 		  url: `${BASE}/${COUNTRIES}`,
-		  headers: { consumerKey }
+		  headers: { consumerKey },
+		  resolveWithFullResponse: fullResponse
 		};
-
-		Object.assign(options, custom);
 
 		return rp.get(options).then(this._transformResponse);
 	}
