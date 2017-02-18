@@ -279,7 +279,6 @@ class File {
 		}
 
 		// assign filter and search params to qs if passed
-		if (custom.filter) { Object.assign(options.qs, { filter: custom.filter }) }
 		if (custom.search) { Object.assign(options.qs, { search: custom.search }) }
 
 		return rp.get(options).then(this._transformResponse);

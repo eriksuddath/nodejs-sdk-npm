@@ -6,10 +6,10 @@ const { consumerKey, organizationId, projectId, languageId, milestoneId } = requ
 
 const app = new App({ consumerKey, organizationId, projectId });
 
-describe('file', () => {
+xdescribe('file', () => {
 
 	let fileIds, segmentId, uploadedFiles;
-	xdescribe('list files', () => {
+	describe('list files', () => {
 
 		it('should return a list of project files for a given target language', (done) => {
 			app.file.list(languageId)
@@ -60,7 +60,7 @@ describe('file', () => {
 
 	})
 
-	xdescribe('list file types', () => {
+	describe('list file types', () => {
 
 		it('should return a list of the file types in a project', (done) => {
 			app.file.types()
@@ -94,7 +94,7 @@ describe('file', () => {
 
 	})
 
-	xdescribe('upload files', () => {
+	describe('upload files', () => {
 		const files = [{
 			path: __dirname + '/mockFiles/test000.json',
 			type: 'JSON'
@@ -143,7 +143,7 @@ describe('file', () => {
 
 	})
 
-	xdescribe('export files', () => {
+	describe('export files', () => {
 
 		it('should return a link for downloading a .zip file that contains project files', (done) => {
 			app.file.export(languageId, fileIds)
@@ -175,7 +175,7 @@ describe('file', () => {
 
 	})
 
-	xdescribe('update file', () => {
+	describe('update file', () => {
 		it('should update a file', (done) => {
 			const uploadedFile = uploadedFiles[0];
 			const file = {
@@ -198,7 +198,7 @@ describe('file', () => {
 
 	})
 
-	xdescribe('list file segments', () => {
+	describe('list file segments', () => {
 
 		it('should list segments in a file', (done) => {
 			const languageId = 222;
@@ -214,8 +214,6 @@ describe('file', () => {
 				expect(firstSegment).to.exist;
 				expect(firstSegment.segmentId).to.be.a('number');
 				segmentId = firstSegment.segmentId;
-				console.log(segmentId)
-
 				done()
 			})
 			.catch(err => {
@@ -261,7 +259,7 @@ describe('file', () => {
 
 	})
 
-	xdescribe('show file segment', () => {
+	describe('show file segment', () => {
 
 		it('should show details of a segment in a file', (done) => {
 			const fileId = 738099;
