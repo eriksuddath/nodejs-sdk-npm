@@ -48,7 +48,7 @@ export const SEGMENT_ID_ERROR = 'must be a valid numberic segmentId';
 export const MILESTONE_ID_ERROR = 'must be a valid 4 digit numeric milestoneId';
 
 export const V_consumerKey = (consumerKey) => {
-  if (typeof consumerKey !== 'string' && String(consumerKey).length !== 32) { throw Error(CONSUMER_KEY_ERROR) }
+  if (typeof consumerKey !== 'string' || String(consumerKey).length !== 32) { throw Error(CONSUMER_KEY_ERROR) }
 }
 
 export const V_organizationId = (organizationId) => {
