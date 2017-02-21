@@ -2,9 +2,10 @@
   "name": "qordoba-js-sdk",
   "version": "0.0.0",
   "description": "a javascript sdk for the qordoba v2 api",
-  "main": "index.js",
+  "main": "lib/App.js",
   "scripts": {
-    "test": "gulp build && mocha --timeout 60000"
+    "test": "gulp build && mocha --timeout 60000 --reporter nyan",
+    "build": "gulp build"
   },
   "author": "Erik Suddath <erik.suddath@gmail.com>",
   "license": "MIT",
@@ -19,5 +20,8 @@
     "babel-plugin-transform-runtime": "^6.23.0",
     "request": "^2.79.0",
     "request-promise": "^4.1.1"
+  },
+  "engines": {
+    "node": ">=4.2.4"
   }
 }

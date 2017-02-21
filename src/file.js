@@ -12,6 +12,8 @@ import {
 	FILE_SEGMENTS,
 	FILE_SEGMENT,
 	FILE_JSON,
+	FILE_BULK1,
+	FILE_BULK2,
 	V_languageId,
 	V_filesUpload,
 	V_fileUpdate,
@@ -24,9 +26,6 @@ import {
 import { LANG_CODES } from './lang_codes';
 
 import App from './App';
-
-const x_auth_token = '2e6ed10f-cf65-4fe9-9067-a714a8849d85';
-
 
 class File {
 	constructor(config, transformResponse) {
@@ -104,6 +103,8 @@ class File {
 		return rp.get(options).then(this._transformResponse);
 	}
 
+
+
 	/**
 	* returns a list of the file types in a project
 	* @params {object|array}     filesUpload			A file object or array of file objects { path, type } || [{ path, type}, { path, type }...]
@@ -121,9 +122,9 @@ class File {
 			const { path, type } = file;
 
 			var options = { 
-			  url: `https://app.qordoba.com/api/organizations/${organizationId}/upload/uploadFile_anyType?content_type_code=${type}&projectId=${projectId}`,
+			  url: `${BASE}/${FILE_BULK1}`,
 			  qs: { type },
-			  headers: { 'x-auth-token': x_auth_token,'content-type': 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' },
+			  headers: { consumerKey, organizationId, projectId,'content-type': 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' },
 			  formData: { 
 			    file: fs.createReadStream(path),
 			    file_names: '[]'
@@ -164,8 +165,8 @@ class File {
 			});
 
 			var options = { 
-			  url: `https://app.qordoba.com/api/projects/${projectId}/append_files`,
-			  headers: { 'x-auth-token': x_auth_token,'content-type': 'application/json;charset=UTF-8' },
+			  url: `${BASE}/${FILE_BULK2}`,
+			  headers: { consumerKey, projectId,'content-type': 'application/json;charset=UTF-8' },
 			  body: payload,
 		  	json: true 
 			};

@@ -1,5 +1,5 @@
 // API
-export const BASE = 'https://api.qordoba.com/v2';
+export const BASE = 'https://devapi.qordoba.com/v2';
 export const PING = 'ping';
 export const LANGUAGES = 'languages';
 export const COUNTRIES = 'countries';
@@ -22,6 +22,8 @@ export const FILE_UPDATE = 'files/update';
 export const FILE_SEGMENTS = 'files/segments/list';
 export const FILE_SEGMENT = 'files/segments/show';
 export const FILE_JSON = 'files/json';
+export const FILE_BULK1 = 'files/bulk1';
+export const FILE_BULK2 = 'files/bulk2';
 
 // TM
 export const TM_LIST = 'tms/list';
