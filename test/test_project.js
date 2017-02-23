@@ -1,5 +1,5 @@
 const expect = require('Chai').expect;
-const App = require('../lib/App').default;
+const App = require('../lib/App');
 
 // get test config
 const { consumerKey, organizationId, projectId, base } = require('./test_config');

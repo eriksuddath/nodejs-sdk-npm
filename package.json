@@ -1,6 +1,6 @@
 {
-  "name": "qordoba-js-sdk",
-  "version": "0.0.0",
+  "name": "Qordoba-NodeJS-SDK",
+  "version": "0.0.2",
   "description": "a javascript sdk for the qordoba v2 api",
   "main": "lib/App.js",
   "scripts": {

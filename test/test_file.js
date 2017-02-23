@@ -1,5 +1,5 @@
 const expect = require('Chai').expect;
-const App = require('../lib/App').default;
+const App = require('../lib/App');
 
 // get test config
 const { consumerKey, organizationId, projectId, languageId, milestoneId } = require('./test_config');
@@ -140,6 +140,20 @@ describe('file', () => {
 				done()
 			})
 		})
+
+		// it('should accept a custom version', (done) => {
+		// 	const version = '22.1';
+		// 	app.file.upload(files, { version })
+		// 	.then( (files) => {
+  //       console.log(files);
+		// 		done()
+		// 	})
+		// 	.catch(err => {
+		// 		console.log(err)
+		// 		expect(err).to.not.exist
+		// 		done()
+		// 	})
+		// })
 
 	})
 

@@ -111,12 +111,13 @@ class File {
   *   @param {string}     some_file_object.path        System path to target file
   *   @param {string}     some_file_object.type        Type of file to uplaod
 	*/
-	upload(filesUpload) {
+	upload(filesUpload, custom = { version: null }) {
 		/*
 			ALPHA ROUTE: NEED TO UPDATE TO APIGEE
 		*/
 		this._validate({ filesUpload })
 		const { consumerKey, organizationId, projectId } = this._config;
+		const { version } = custom;
 		
 		const allOptions = [].concat(filesUpload).map( (file) => {
 			const { path, type } = file;
@@ -148,7 +149,7 @@ class File {
 		      "id": upload_id,
 		      "source_columns":[],
 		      "file_name": file_name,
-		      "version_tag": versionTag,
+		      "version_tag": version || versionTag,
 		      "content_type_codes":[
 		         {
 		            "content_type_code_id":148,
@@ -188,7 +189,13 @@ class File {
 		if (versionTags.length === 0) {
 			return '1.0';
 		}
-		const mostRecent = versionTags[0];
+
+		let mostRecent = versionTags[0];
+
+		if (versionTags[0].includes('initial_version')) {
+			mostRecent = '1.0';
+		};
+		
 		const main = mostRecent.split('.')[0];
 		const sub = mostRecent.split('.')[1];
 
