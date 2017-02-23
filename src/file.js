@@ -143,7 +143,7 @@ class File {
 			const payload = files.map((file) => {
 				const { upload_id, file_name, version_tags } = file;
 				const versionTag = this._incrementVersion(version_tags);
-				versions.push(versionTag);
+				versions.push(version || versionTag);
 				filenames.push(file_name);
 				return {
 		      "id": upload_id,
