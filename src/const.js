@@ -1,5 +1,5 @@
 // API
-export const BASE = 'https://devapi.qordoba.com/v2';
+export const BASE = 'https://api.qordoba.com/v2';
 export const PING = 'ping';
 export const LANGUAGES = 'languages';
 export const COUNTRIES = 'countries';
