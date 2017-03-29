@@ -82,23 +82,30 @@ app.ping({ fullResponse: true })
 
 #### Ping
 
-* returns the status of the Qordoba API
-* @return {Promise} A Promise that is fulfilled with the API response or rejected with an error
-* @param {object}     custom     Custom object with keys explained below: (optional)
-*   @param {number}     custom.fullResponse        Forces return of full response (optional, default: false)
+Returns the status of the Qordoba API
 
 ```js
 app.ping()
 ```
 
+Resolve with Full Response
 
+```js
+app.ping({ fullResponse: true })
+.then( body => /* do something */ )
+```
+#### Languages
+
+Returns detail about the language detail for Qordoba
+* Arguments
+  * { fullResponse: true } Forces return of full response (optional, default: false)
+  
+```js
 app.languages()
-* returns detail about the language detail for Qordoba
-* @return {Promise} A Promise that is fulfilled with the API response or rejected with an error
-* @param {object}     custom     Custom object with keys explained below: (optional)
-* @param {number}     custom.fullResponse        Forces return of full response (optional, default: false)
+.then( body => /* do something */ )
+```    
 
-
+#### Countries
 app.countries()
 * returns detail about the country list for Qordoba
 * @return {Promise} A Promise that is fulfilled with the API response or rejected with an error
