@@ -1,0 +1,90 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "qordoba-nodejs-sdk",
+        "scope": null,
+        "escapedName": "qordoba-nodejs-sdk",
+        "name": "qordoba-nodejs-sdk",
+        "rawSpec": "",
+        "spec": "latest",
+        "type": "tag"
+      },
+      "/Users/eriksuddath/Desktop/visa"
+    ]
+  ],
+  "_from": "qordoba-nodejs-sdk@latest",
+  "_id": "qordoba-nodejs-sdk@0.0.3",
+  "_inCache": true,
+  "_location": "/qordoba-nodejs-sdk",
+  "_nodeVersion": "6.9.5",
+  "_npmOperationalInternal": {
+    "host": "packages-12-west.internal.npmjs.com",
+    "tmp": "tmp/qordoba-nodejs-sdk-0.0.3.tgz_1487880798412_0.18099044356495142"
+  },
+  "_npmUser": {
+    "name": "qordoba",
+    "email": "hello@qordoba.com"
+  },
+  "_npmVersion": "4.2.0",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "qordoba-nodejs-sdk",
+    "scope": null,
+    "escapedName": "qordoba-nodejs-sdk",
+    "name": "qordoba-nodejs-sdk",
+    "rawSpec": "",
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "#USER"
+  ],
+  "_resolved": "https://registry.npmjs.org/qordoba-nodejs-sdk/-/qordoba-nodejs-sdk-0.0.3.tgz",
+  "_shasum": "5f51a68c222964128bf0f2f8ae5a064235d261d9",
+  "_shrinkwrap": null,
+  "_spec": "qordoba-nodejs-sdk",
+  "_where": "/Users/eriksuddath/Desktop/visa",
+  "author": {
+    "name": "Erik Suddath",
+    "email": "erik.suddath@gmail.com"
+  },
+  "dependencies": {
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "request": "^2.79.0",
+    "request-promise": "^4.1.1"
+  },
+  "description": "a javascript sdk for the qordoba v2 api",
+  "devDependencies": {
+    "babel-preset-es2015": "^6.22.0",
+    "chai": "^3.5.0",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "mocha": "^3.2.0"
+  },
+  "directories": {},
+  "dist": {
+    "shasum": "5f51a68c222964128bf0f2f8ae5a064235d261d9",
+    "tarball": "https://registry.npmjs.org/qordoba-nodejs-sdk/-/qordoba-nodejs-sdk-0.0.3.tgz"
+  },
+  "engines": {
+    "node": ">=4.2.4"
+  },
+  "gitHead": "106c8d619851eede5a3524981da0b05f2f6ed8c7",
+  "license": "MIT",
+  "main": "lib/App.js",
+  "maintainers": [
+    {
+      "name": "qordoba",
+      "email": "hello@qordoba.com"
+    }
+  ],
+  "name": "qordoba-nodejs-sdk",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "scripts": {
+    "build": "gulp build",
+    "test": "gulp build && mocha --timeout 60000 --reporter nyan"
+  },
+  "version": "0.0.3"
+}
