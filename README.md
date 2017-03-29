@@ -29,6 +29,9 @@ Directory Structure
 
 ```
 
+```js
+```
+
 ### Creating a new app
 
 const app = new App({ consumerKey, organizationId, projectId });
@@ -45,35 +48,43 @@ app.ping()
 
 arguments are passed directly into the methods
 
+```js
 app.file.list(languageId)
 .then( body => /* do something */ )
 .catch( err => /* do something */ )
+```
 
 ### Custom Options
 
 can optionally be passed inside an object literal as the last argument
 
+```js
 app.file.segments(languageId, fileId, { limit: 1 })
 .then( body => /* do something */ )
 .catch( err => /* do something */ )
+```
 
 ### Full Response
 
 get full response by passing { fullResponse: true } as one of your key:value pairs inside custom options
 
+```js
 app.ping({ fullResponse: true })
 .then( body => /* do something */ )
 .catch( err => /* do something */ )
+```
 
 ## Available Methods
 
 ### Globals
 
+```js
 app.ping()
 * returns the status of the Qordoba API
 * @return {Promise} A Promise that is fulfilled with the API response or rejected with an error
 * @param {object}     custom     Custom object with keys explained below: (optional)
 *   @param {number}     custom.fullResponse        Forces return of full response (optional, default: false)
+```
 
 
 app.languages()
