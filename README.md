@@ -35,9 +35,11 @@ const app = new App({ consumerKey, organizationId, projectId });
 
 ### Basic Use
 
+```js
 app.ping()
 .then( body => /* do something */ )
 .catch( err => /* do something */ )
+```
 
 ### Arguments
 
