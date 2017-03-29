@@ -34,7 +34,9 @@ Directory Structure
 
 ### Creating a new app
 
+```js
 const app = new App({ consumerKey, organizationId, projectId });
+```
 
 ### Basic Use
 
@@ -78,12 +80,15 @@ app.ping({ fullResponse: true })
 
 ### Globals
 
-```js
-app.ping()
+#### Ping
+
 * returns the status of the Qordoba API
 * @return {Promise} A Promise that is fulfilled with the API response or rejected with an error
 * @param {object}     custom     Custom object with keys explained below: (optional)
 *   @param {number}     custom.fullResponse        Forces return of full response (optional, default: false)
+
+```js
+app.ping()
 ```
 
 
