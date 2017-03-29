@@ -29,12 +29,15 @@ Directory Structure
 
 ```
 
-```js
-```
+
 
 ### Creating a new app
 
 ```js
+const consumerKey = 'YOUR_CONSUMER_KEY';
+const organizationId = 'YOUR_ORGANIZATION_ID';
+const projectId = 'YOUR_PROJECT_ID'
+
 const app = new App({ consumerKey, organizationId, projectId });
 ```
 
@@ -96,9 +99,7 @@ app.ping({ fullResponse: true })
 ```
 #### Languages
 
-Returns detail about the language detail for Qordoba
-* Arguments
-  * { fullResponse: true } Forces return of full response (optional, default: false)
+Returns language detail for Qordoba
   
 ```js
 app.languages()
@@ -106,29 +107,50 @@ app.languages()
 ```    
 
 #### Countries
+
+Returns the country list for Qordoba
+
+```js
 app.countries()
-* returns detail about the country list for Qordoba
-* @return {Promise} A Promise that is fulfilled with the API response or rejected with an error
-* @param {object}     custom     Custom object with keys explained below: (optional)
-*   @param {number}     custom.fullResponse        Forces return of full response (optional, default: false)
+.then( body => /* do something */ )
+```
 
-### Organization
+#### Organization
 
+Returns information about your organization's team members
+
+```js
 app.organization.team()
-* returns information about your organization's team members
-* @return {Promise} A Promise that is fulfilled with the API response or rejected with an error
-* @param {object}     custom     Custom object with keys explained below: (optional)
-*   @param {number}     custom.fullResponse        Forces return of full response (optional, default: false)
+.then( body => /* do something */ )
+```
 
 ### Project
 
+#### List Projects
+
+Returns a list of projects that belong to an organization, including some project details.
+
+```js
 app.project.list()
-* returns a list of projects that belong to an organization, including some project details.
+.then( body => /* do something */ )
+```
+Pick and choose custom parameters
+
+* offset -   Number of files to skip before starting the list (optional, default: 0)
+* limit - Maximum number of files to list (optional, default: 100)
+* search - The search term (optional, default: none)
+* fullResponse - Forces return of full response (optional, default: false)
+
+```js
+app.project.list({ offset, limit, search, fullResponse })
+.then( body => /* do something */ )
+```
+* 
 * @param {object}     custom     Custom object with keys explained below: (optional)
-*   @param {number}     custom.offset        Number of files to skip before starting the list (optional, default: 0)
-*   @param {number}     custom.limit     Maximum number of files to list (optional, default: 100)
-*   @param {string}     custom.search     The search term (optional, default: none)
-*   @param {number}     custom.fullResponse        Forces return of full response (optional, default: false)
+*   @param {number}     custom.offset      
+*   @param {number}     custom.limit     
+*   @param {string}     custom.search     
+*   @param {number}     custom.fullResponse        
 * @return {Promise} A Promise that is fulfilled with the API response or rejected with an error
 
 app.project.detail()
