@@ -14,8 +14,6 @@ npm install --save qordoba-nodejs-sdk
 
 ### Creating a new app
 
-Import the client
-
 
 ```js
 const QordobaApp = require('qordoba-nodejs-sdk');
