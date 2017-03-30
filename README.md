@@ -17,11 +17,11 @@ npm install --save qordoba-nodejs-sdk
 ### Creating a new app
 
 ```js
-const consumerKey = 'YOUR_CONSUMER_KEY';
-const organizationId = 'YOUR_ORGANIZATION_ID';
-const projectId = 'YOUR_PROJECT_ID'
-
-const app = new App({ consumerKey, organizationId, projectId });
+const app = new App({ 
+  consumerKey: 'YOUR_CONSUMER_KEY', 
+  organizationId: 'YOUR_ORGANIZATION_ID', 
+  projectId: 'YOUR_PROJECT_ID' 
+});
 ```
 
 ### Basic Use
