@@ -6,13 +6,11 @@ Makes it easy to work with the Qordoba API in nodejs
 
 Before getting started, you will need to visit Qordoba.com and set up an account.
 
-After creating an account, clone down the repo from github and npm install in the root.
+Install the SDK via NPM
+
 ```
 npm install --save qordoba-nodejs-sdk
 ```
-
-
-
 
 ### Creating a new app
 
