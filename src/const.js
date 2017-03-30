@@ -46,6 +46,7 @@ export const FILE_IDS_ERROR = 'must be a valid fileId or array of valid fileIds'
 export const FILE_ID_ERROR = 'must be a valid six digit fileId';
 export const SEGMENT_ID_ERROR = 'must be a valid numberic segmentId';
 export const MILESTONE_ID_ERROR = 'must be a valid 4 digit numeric milestoneId';
+export const VERSION_TAG_ERROR = 'must pass a valid version tag string';
 
 export const V_consumerKey = (consumerKey) => {
   if (typeof consumerKey !== 'string' || String(consumerKey).length !== 32) { throw Error(CONSUMER_KEY_ERROR) }
@@ -99,3 +100,6 @@ export const V_milestoneId = (milestoneId) => {
   if (typeof milestoneId !== 'number' && String(milestoneId).length !== 4) { throw Error(MILESTONE_ID_ERROR) }
 }
 
+export const V_versionTag = (versionTag) => {
+  if (typeof versionTag !== 'string' || versionTag === undefined) { throw Error(VERSION_TAG_ERROR) }
+}

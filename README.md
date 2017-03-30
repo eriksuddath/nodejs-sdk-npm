@@ -1,14 +1,349 @@
 # Qordoba-nodejs-sdk-npm
 
-Makes it easy to work with the Qordoba API in nodejs
+NodeJS client for interacting with the Qordoba API
 
 ## Getting Started
 
 Before getting started, you will need to visit Qordoba.com and set up an account.
 
-After creating an account, clone down the repo from github and npm install in the root.
+Install the SDK via NPM
 
-Directory Structure
+```
+npm install --save qordoba-nodejs-sdk
+```
+
+### Creating a new app
+
+```js
+const app = new App({ 
+  consumerKey: 'your_consumer_key', 
+  organizationId: 'your_organization_id', 
+  projectId: 'your_project_id' 
+});
+```
+
+### Basic Use
+
+```js
+app.ping()
+.then( body => /* do something */ )
+.catch( err => /* do something */ )
+```
+
+### Arguments
+
+Required arguments are passed directly into the methods
+
+```js
+app.file.list(languageId)
+.then( body => /* do something */ )
+.catch( err => /* do something */ )
+```
+
+### Custom Options
+
+Custom arguments can optionally be passed inside an object literal as the last argument
+
+```js
+app.file.segments(languageId, fileId, { limit: 1 })
+.then( body => /* do something */ )
+.catch( err => /* do something */ )
+```
+
+### Full Response
+
+get full response by passing ```js{ fullResponse: true }``` as a custom option
+
+```js
+app.ping({ fullResponse: true })
+.then( body => /* do something */ )
+.catch( err => /* do something */ )
+```
+
+## Available Methods
+
+### Globals
+
+#### Ping
+
+Returns the status of the Qordoba API
+
+```js
+app.ping()
+```
+
+Resolve with Full Response
+
+```js
+app.ping({ fullResponse: true })
+.then( body => /* do something */ )
+```
+#### Languages
+
+Returns language detail for Qordoba
+  
+```js
+app.languages()
+.then( body => /* do something */ )
+```    
+
+#### Countries
+
+Returns the country list for Qordoba
+
+```js
+app.countries()
+.then( body => /* do something */ )
+```
+
+#### Organization
+
+Returns information about your organization's team members
+
+```js
+app.organization.team()
+.then( body => /* do something */ )
+```
+
+### Project
+
+#### List Projects
+
+Returns a list of projects that belong to an organization, including some project details.
+
+```js
+app.project.list()
+.then( body => /* do something */ )
+```
+Pick and choose custom parameters
+
+```js
+app.project.list({ offset: 0, limit: 100, search: 'foo', fullResponse: true })
+.then( body => /* do something */ )
+
+// offset           Number of files to skip before starting the list (optional, default: 0)
+// limit            Maximum number of files to list (optional, default: 100)
+// search           The search term (optional, default: none)
+// fullResponse     Forces return of full response (optional, default: false)
+```
+
+#### Project Detail
+
+Returns detailed information about a project
+
+```js
+app.project.detail()
+.then( body => /* do something */ )
+```
+#### Project Status
+
+Returns the status of all projects
+
+```js
+app.project.status()
+.then( body => /* do something */ )
+```
+#### Project Workflow
+
+Returns the milestone information, status, and language for a project
+
+```js
+app.project.workflow()
+.then( body => /* do something */ )
+```
+
+### File
+
+#### List Files
+
+Returns a list of project files for a given target languageId or languageCode
+
+With language Id
+```js
+const languageId = 222;
+
+app.file.list(languageId)
+.then( body => /* do something */ )
+
+// languageId           The id of target language (number or string)
+```
+
+With 4 letter language code
+
+```js
+app.file.list('es-mx')
+.then( body => /* do something */ )  
+```
+
+With Custom Options
+```js
+app.file.list('es-mx', { limit, offset })
+.then( body => /* do something */ )
+
+// offset           Number of files to skip before starting the list (optional, default: 0)
+// limit            Maximum number of files to list (optional, default: 100)
+```
+
+#### List File Types
+
+Returns a list of the file types in a project
+
+```js
+app.file.types()
+.then( body => /* do something */ )  
+```
+
+#### Upload Files
+
+Returns a list of the file types in a project
+
+Upload a single file
+```js
+const file = {
+  path: 'the_path_to_your_file',
+  type: 'JSON'
+};
+
+const versionTag = '1.0.0';
+
+app.file.upload(file, versionTag)
+.then( body => /* do something */ )
+
+// file                 A file object or array of file objects(object or array)
+// versionTag          A versionTag for files(string)
+```
+Upload multiple files
+
+```js
+// array of file paths
+const files = [{ path: 'path_to_file1', type: 'JSON' }, { path: 'path_to_file2', type: 'JSON' } ... ];
+
+// versionTag for all files
+const versionTag = '1.0.0';
+
+app.file.upload(files, versionTag)
+.then( body => /* do something */ )  
+```
+
+#### Export Files as a Zip
+
+Returns a link for downloading a .zip file that contains project files for a specified page and target language
+
+Export a single File
+```js
+
+const fileId = 'your_file_id';
+const languageId = 'your_language_id';
+
+app.file.export(languageId, fileIds)
+.then( body => /* do something */ ) 
+
+// fileId              The id or ids of files to export (number or array of numbers)
+// languageId          The id of target language (number or string)
+```
+
+Export a group of files
+
+```js
+
+const filesIds = [ 420024, 902102, etc... ] ;
+const languageId = 222;
+
+app.file.export(languageId, fileIds)
+.then( body => /* do something */ )  
+```
+
+#### Update File
+
+Updates a file in a project - parallel updates are not supported
+
+```js
+const fileToUpdate = {
+  path: 'path_to_your_file',
+  fileId: 'fileId_of_file_to_update'
+}
+
+app.file.update(fileToUpdate)
+.then( body => /* do something */ )  
+
+// path              Path to target file(string)
+// languageId        Id of file to update(number)
+```
+
+
+#### List File Segments
+
+Returns a list or filtered list of the segments in a file
+
+```js
+const languageId = 222;
+const fileId = 902102;
+
+app.file.segments(languageId, fileId)
+.then( body => /* do something */ )  
+
+// fileId            The id or ids of files to export (number)
+// languageId        Id of file to update(number)
+```
+
+With custom options 
+
+```js
+app.file.segments(languageId, fileId, { offset, limit, search })
+
+// offset           Number of files to skip before starting the list (optional, default: 0)
+// limit            Maximum number of files to list (optional, default: 100)
+// search           The search term (optional, default: none)
+// fullResponse     Forces return of full response (optional, default: false)
+```
+
+#### File Segment Detail
+
+Returns a file segment by its id
+
+```js
+app.file.segment(languageId, fileId, segmentId)
+.then( body => /* do something */ )
+
+// fileId            Id or ids of files to export (number)
+// languageId        Id of file to update(number)
+// segmentId         Id of file segment (number)
+```
+
+#### Download File As JSON
+
+Returns json object of key value pairs for specified files
+
+Downlaod a single file
+
+```js
+app.file.json(languageId, milestoneId, fileIds)
+.then( body => /* do something */ )
+
+// languageId        Id of file to update(number)
+// milestoneId       id of the milestone to download from
+// fileId            Id or ids of file(s) to download
+```
+
+Download multiple files
+
+```js
+const filesIds = [ 420024, 902102, etc... ] ;
+
+app.file.json(languageId, milestoneId, fileIds)
+.then( body => /* do something */ )
+```
+
+#### Recent File Ids
+
+```js
+app.file.recent(languageId)
+.then( body => /* do something */ )
+
+// languageId        Id of file to update(number)
+```
+
+### Directory Structure
 
 ```
 ├── root
@@ -28,176 +363,6 @@ Directory Structure
 │   ├── readme.md
 
 ```
-
-### Creating a new app
-
-const app = new App({ consumerKey, organizationId, projectId });
-
-### Basic Use
-
-app.ping()
-.then( body => /* do something */ )
-.catch( err => /* do something */ )
-
-### Arguments
-
-arguments are passed directly into the methods
-
-app.file.list(languageId)
-.then( body => /* do something */ )
-.catch( err => /* do something */ )
-
-### Custom Options
-
-can optionally be passed inside an object literal as the last argument
-
-app.file.segments(languageId, fileId, { limit: 1 })
-.then( body => /* do something */ )
-.catch( err => /* do something */ )
-
-### Full Response
-
-get full response by passing { fullResponse: true } as one of your key:value pairs inside custom options
-
-app.ping({ fullResponse: true })
-.then( body => /* do something */ )
-.catch( err => /* do something */ )
-
-## Available Methods
-
-### Globals
-
-app.ping()
-* returns the status of the Qordoba API
-* @return {Promise} A Promise that is fulfilled with the API response or rejected with an error
-* @param {object}     custom     Custom object with keys explained below: (optional)
-*   @param {number}     custom.fullResponse        Forces return of full response (optional, default: false)
-
-
-app.languages()
-* returns detail about the language detail for Qordoba
-* @return {Promise} A Promise that is fulfilled with the API response or rejected with an error
-* @param {object}     custom     Custom object with keys explained below: (optional)
-* @param {number}     custom.fullResponse        Forces return of full response (optional, default: false)
-
-
-app.countries()
-* returns detail about the country list for Qordoba
-* @return {Promise} A Promise that is fulfilled with the API response or rejected with an error
-* @param {object}     custom     Custom object with keys explained below: (optional)
-*   @param {number}     custom.fullResponse        Forces return of full response (optional, default: false)
-
-### Organization
-
-app.organization.team()
-* returns information about your organization's team members
-* @return {Promise} A Promise that is fulfilled with the API response or rejected with an error
-* @param {object}     custom     Custom object with keys explained below: (optional)
-*   @param {number}     custom.fullResponse        Forces return of full response (optional, default: false)
-
-### Project
-
-app.project.list()
-* returns a list of projects that belong to an organization, including some project details.
-* @param {object}     custom     Custom object with keys explained below: (optional)
-*   @param {number}     custom.offset        Number of files to skip before starting the list (optional, default: 0)
-*   @param {number}     custom.limit     Maximum number of files to list (optional, default: 100)
-*   @param {string}     custom.search     The search term (optional, default: none)
-*   @param {number}     custom.fullResponse        Forces return of full response (optional, default: false)
-* @return {Promise} A Promise that is fulfilled with the API response or rejected with an error
-
-app.project.detail()
-* returns detailed information about a project
-* @return {Promise} A Promise that is fulfilled with the API response or rejected with an error
-* @param {object}     custom     Custom object with keys explained below: (optional)
-*   @param {number}     custom.fullResponse        Forces return of full response (optional, default: false)
-
-app.project.status()
-* returns the status of all projects
-* @return {Promise} A Promise that is fulfilled with the API response or rejected with an error
-* @param {object}     custom     Custom object with keys explained below: (optional)
-*   @param {number}     custom.fullResponse        Forces return of full response (optional, default: false)
-
-app.project.workflow()
-* returns the milestone information, status, and language for a project
-* @return {Promise} A Promise that is fulfilled with the API response or rejected with an error
-* @param {object}     custom     Custom object with keys explained below: (optional)
-*   @param {number}     custom.fullResponse        Forces return of full response (optional, default: false)
-
-app.project.milestones()
-* returns the milestone information, status, and language for a project
-* @return {Promise} A Promise that is fulfilled with the API response or rejected with an error
-
-### File
-
-app.file.list(languageId)
-* returns a list of project files for a given target languageId or languageCode
-* @params {number|string}     languageId | languageCode			The id of target language
-* @param {object}     custom     Custom object with keys explained below: (optional)
-*   @param {number}     custom.offset        Number of files to skip before starting the list (optional, default: 0)
-*   @param {number}     custom.limit     Maximum number of files to list (optional, default: 100)
-*   @param {number}     custom.fullResponse        Forces return of full response (optional, default: false)
-* @return {Promise} A Promise that is fulfilled with the API response or rejected with an error
-
-app.file.types()
-* returns a list of the file types in a project
-* @param {object}     custom     Custom object with keys explained below: (optional)
-*   @param {number}     custom.fullResponse        Forces return of full response (optional, default: false)
-* @return {Promise} A Promise that is fulfilled with the API response or rejected with an error
-
-app.file.upload(filesUpload)
-* returns a list of the file types in a project
-* @params {object|array}     filesUpload			A file object or array of file objects { path, type } || [{ path, type}, { path, type }...]
-*   @param {string}     some_file_object.path        System path to target file
-*   @param {string}     some_file_object.type        Type of file to uplaod
-
-app.file.export(languageId, fileIds)
-* returns a link for downloading a .zip file that contains project files for a specified page and target language
-* @params {number|string}     languageId | languageCode			The id of target language
-* @params {string|array}     fileIds			Ids of files to export
-* @param {object}     custom     Custom object with keys explained below: (optional)
-*   @param {number}     custom.fullResponse        Forces return of full response (optional, default: false)
-
-app.file.update(fileUpdate)
-* updates a file in a project - parallel updates are not supported
-* @params {object}     fileUpdate			A file object { path, fileId }
-  *   @param {string}     some_file_object.path        Path to target file
-  *   @param {string}     some_file_object.fileId        Id of file to update
-* @param {object}     custom     Custom object with keys explained below: (optional)
-*   @param {number}     custom.fullResponse        Forces return of full response (optional, default: false)
-
-app.file.segments(languageId, fileId)
-* returns a list or filtered list of the segments in a file
-* @params {number|string}     languageId | languageCode			The id of target language
-* @params {number}     fileId			The id of the file to retrieve segments
-* @param {object}     custom     Custom object with keys explained below: (optional)
-*   @param {number}     custom.offset        Number of files to skip before starting the list (optional, default: 0)
-*   @param {number}     custom.limit     Maximum number of files to list (optional, default: 100)
-*   @param {string}     custom.search     The search term (optional, default: none)
-*   @param {number}     custom.fullResponse        Forces return of full response (optional, default: false)
-
-app.file.segment(languageId, fileId, segmentId)
-* returns a file segment by its id
-* @params {number|string}     languageId | languageCode			The id of target language
-* @params {number}     fileId			The id of the file to retrieve segments
-* @params {number}     segmentId			The id of segment
-* @param {object}     custom     Custom object with keys explained below: (optional)
-*   @param {number}     custom.fullResponse        Forces return of full response (optional, default: false)
-
-app.file.json(languageId, milestoneId, fileIds)
-* returns json object of key value pairs 
-* @params {number|string}     languageId | languageCode			The id of target language
-* @params {number}     milestoneId		The id of the milestone to get json from (see app.project.milestone)
-* @params {number}     fileId			The id of the file to retrieve segments
-* @params {number}     segmentId			The id of segment
-
-
-app.file.recent(languageId)
-* returns array of most version of files by target language
-* @params {number|string}     languageId | languageCode			The id of target language
-* @param {object}     custom     Custom object with keys explained below: (optional)
-*   @param {number}     custom.fullResponse        Forces return of full response (optional, default: false)
-
 
 ### Scripts
 

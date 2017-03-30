@@ -20,7 +20,8 @@ import {
 	V_fileIds,
 	V_fileId,
 	V_segmentId,
-	V_milestoneId
+	V_milestoneId,
+	V_versionTag
 } from './const';
 
 import { LANG_CODES } from './lang_codes';
@@ -51,7 +52,8 @@ class File {
 			fileIds: () => V_fileIds(options.fileIds),
 			fileId: () => V_fileId(options.fileId),
 			segmentId: () => V_segmentId(options.segmentId),
-			milestoneId: () => V_milestoneId(options.milestoneId)
+			milestoneId: () => V_milestoneId(options.milestoneId),
+			versionTag: () => V_versionTag(options.versionTag)
 		}
 		
 		keys.forEach( key => validate[key]() )
@@ -110,14 +112,14 @@ class File {
 	* @params {object|array}     filesUpload			A file object or array of file objects { path, type } || [{ path, type}, { path, type }...]
   *   @param {string}     some_file_object.path        System path to target file
   *   @param {string}     some_file_object.type        Type of file to uplaod
+	* @params {string}     versionTag			A versionTag for files
 	*/
-	upload(filesUpload, custom = { version: null }) {
+	upload(filesUpload, versionTag ) {
 		/*
 			ALPHA ROUTE: NEED TO UPDATE TO APIGEE
 		*/
-		this._validate({ filesUpload })
+		this._validate({ filesUpload, versionTag })
 		const { consumerKey, organizationId, projectId } = this._config;
-		const { version } = custom;
 		
 		const allOptions = [].concat(filesUpload).map( (file) => {
 			const { path, type } = file;
@@ -138,18 +140,15 @@ class File {
 		// make first request to upload files, returns fileIds
 		return Promise.all(allOptions.map(options => rp.post(options).then(this._transformResponse)))
 		.then((files) => {
-			const versions = [];
 			const filenames = [];
 			const payload = files.map((file) => {
-				const { upload_id, file_name, version_tags } = file;
-				const versionTag = this._incrementVersion(version_tags);
-				versions.push(version || versionTag);
+				const { upload_id, file_name } = file;
 				filenames.push(file_name);
 				return {
 		      "id": upload_id,
 		      "source_columns":[],
 		      "file_name": file_name,
-		      "version_tag": version || versionTag,
+		      "version_tag": versionTag,
 		      "content_type_codes":[
 		         {
 		            "content_type_code_id":148,
@@ -177,37 +176,13 @@ class File {
 				.then(this._transformResponse)
 				.then(({ files_ids }) => {
 					return files_ids.map((fileId, index) => {
-						const version = versions[index];
 						const filename = filenames[index];
-						return Object.assign({}, { fileId, filename, versionTag: version });
+						return Object.assign({}, { fileId, filename, versionTag });
 					})
 			 	})
 		})
 	}
 
-	_incrementVersion(versionTags) {
-		if (versionTags.length === 0) {
-			return '1.0';
-		}
-
-		let mostRecent = versionTags[0];
-
-		if (versionTags[0].includes('initial_version')) {
-			mostRecent = '1.0';
-		};
-		
-		const main = mostRecent.split('.')[0];
-		const sub = mostRecent.split('.')[1];
-
-		if (sub !== '9') {
-			const newSub = String(Number(sub) + 1);
-			return `${main}.${newSub}`;
-		} else {
-			const newSub = '0';
-			const newMain = String(Number(main) + 1);
-			return `${newMain}.${newSub}`;
-		}
-	}
 	/**
 	* returns a link for downloading a .zip file that contains project files for a specified page and target language
 	* @params {number|string}     languageId | languageCode			The id of target language

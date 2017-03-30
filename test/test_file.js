@@ -106,8 +106,9 @@ describe('file', () => {
 		
 		it('should upload a single file', (done) => {
 			const file = files[0];
+			const versionTag = String(new Date().valueOf());
 
-			app.file.upload(file)
+			app.file.upload(file, versionTag)
 			.then( (files) => {
 				const file = files[0];
         expect(files).to.be.a('array');
@@ -127,7 +128,9 @@ describe('file', () => {
 		})
 
 		it('should bulk upload a group of files', (done) => {
-			app.file.upload(files)
+			const versionTag = String(new Date().valueOf());
+
+			app.file.upload(files, versionTag)
 			.then( (files) => {
         expect(files).to.be.a('array');
 				expect(files.length).to.eql(2);
@@ -140,20 +143,6 @@ describe('file', () => {
 				done()
 			})
 		})
-
-		// it('should accept a custom version', (done) => {
-		// 	const version = '22.1';
-		// 	app.file.upload(files, { version })
-		// 	.then( (files) => {
-  //       console.log(files);
-		// 		done()
-		// 	})
-		// 	.catch(err => {
-		// 		console.log(err)
-		// 		expect(err).to.not.exist
-		// 		done()
-		// 	})
-		// })
 
 	})
 
