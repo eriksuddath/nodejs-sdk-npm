@@ -32,7 +32,7 @@ app.ping()
 
 ### Arguments
 
-arguments are passed directly into the methods
+Required arguments are passed directly into the methods
 
 ```js
 app.file.list(languageId)
@@ -42,7 +42,7 @@ app.file.list(languageId)
 
 ### Custom Options
 
-can optionally be passed inside an object literal as the last argument
+Custom arguments can optionally be passed inside an object literal as the last argument
 
 ```js
 app.file.segments(languageId, fileId, { limit: 1 })
@@ -52,7 +52,7 @@ app.file.segments(languageId, fileId, { limit: 1 })
 
 ### Full Response
 
-get full response by passing { fullResponse: true } as one of your key:value pairs inside custom options
+get full response by passing { fullResponse: true } as a custom option
 
 ```js
 app.ping({ fullResponse: true })
