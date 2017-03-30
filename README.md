@@ -121,7 +121,6 @@ Pick and choose custom parameters
 app.project.list({ offset: 0, limit: 100, search: 'foo', fullResponse: true })
 .then( body => /* do something */ )
 
-
 // offset           Number of files to skip before starting the list (optional, default: 0)
 // limit            Maximum number of files to list (optional, default: 100)
 // search           The search term (optional, default: none)
@@ -164,9 +163,13 @@ With language Id
 const languageId = 222;
 
 app.file.list(languageId)
-.then( body => /* do something */ )  
+.then( body => /* do something */ )
+
+// languageId           The id of target language (number or string)
 ```
+
 With 4 letter language code
+
 ```js
 app.file.list('es-mx')
 .then( body => /* do something */ )  
@@ -175,7 +178,10 @@ app.file.list('es-mx')
 With Custom Options
 ```js
 app.file.list('es-mx', { limit, offset })
-.then( body => /* do something */ )  
+.then( body => /* do something */ )
+
+// offset           Number of files to skip before starting the list (optional, default: 0)
+// limit            Maximum number of files to list (optional, default: 100)
 ```
 
 #### List File Types
@@ -203,6 +209,8 @@ const versionTag = '1.0.0';
 app.file.upload(file, versionTag)
 .then( body => /* do something */ )
 
+// file                 A file object or array of file objects(object or array)
+// versionTag          A versionTag for files(string)
 ```
 Unload multiple files
 
@@ -228,7 +236,10 @@ const fileId = 'your_file_id';
 const languageId = 'your_language_id';
 
 app.file.export(languageId, fileIds)
-.then( body => /* do something */ )  
+.then( body => /* do something */ ) 
+
+// fileId              The id or ids of files to export (number or array of numbers)
+// languageId          The id of target language (number or string)
 ```
 
 Export a group of files
@@ -244,13 +255,23 @@ app.file.export(languageId, fileIds)
 
 #### Update File
 
-app.file.update(fileUpdate)
-* updates a file in a project - parallel updates are not supported
-* @params {object}     fileUpdate			A file object { path, fileId }
-  *   @param {string}     some_file_object.path        Path to target file
-  *   @param {string}     some_file_object.fileId        Id of file to update
-* @param {object}     custom     Custom object with keys explained below: (optional)
-*   @param {number}     custom.fullResponse        Forces return of full response (optional, default: false)
+Updates a file in a project - parallel updates are not supported
+
+```js
+const fileToUpdate = {
+  path: 'path_to_your_file',
+  fileId: 'fileId_of_file_to_update'
+}
+
+app.file.update(fileToUpdate)
+.then( body => /* do something */ )  
+
+// path              Path to target file(string)
+// languageId        Id of file to update(number)
+```
+
+
+#### List File Segments
 
 app.file.segments(languageId, fileId)
 * returns a list or filtered list of the segments in a file
