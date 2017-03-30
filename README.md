@@ -7,27 +7,10 @@ Makes it easy to work with the Qordoba API in nodejs
 Before getting started, you will need to visit Qordoba.com and set up an account.
 
 After creating an account, clone down the repo from github and npm install in the root.
-
-Directory Structure
-
 ```
-├── root
-│   ├── lib // transplied ES6 code
-│   ├── src
-│   │   ├── App.js 
-│   │   ├── const.js
-│   │   ├── file.js
-│   │   ├── lang_codes.js
-│   │   ├── organization.js
-│   │   ├── project.js
-│   │   ├── tm.js
-│   ├── test
-│   ├── node_modules
-│   ├── gulpfile.js
-│   ├── package.json
-│   ├── readme.md
-
+npm install --save qordoba-nodejs-sdk
 ```
+
 
 
 
@@ -250,6 +233,26 @@ app.file.recent(languageId)
 * @param {object}     custom     Custom object with keys explained below: (optional)
 *   @param {number}     custom.fullResponse        Forces return of full response (optional, default: false)
 
+### Directory Structure
+
+```
+├── root
+│   ├── lib // transplied ES6 code
+│   ├── src
+│   │   ├── App.js 
+│   │   ├── const.js
+│   │   ├── file.js
+│   │   ├── lang_codes.js
+│   │   ├── organization.js
+│   │   ├── project.js
+│   │   ├── tm.js
+│   ├── test
+│   ├── node_modules
+│   ├── gulpfile.js
+│   ├── package.json
+│   ├── readme.md
+
+```
 
 ### Scripts
 
