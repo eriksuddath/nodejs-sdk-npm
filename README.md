@@ -117,14 +117,15 @@ app.project.list()
 ```
 Pick and choose custom parameters
 
-* offset -   Number of files to skip before starting the list (optional, default: 0)
-* limit - Maximum number of files to list (optional, default: 100)
-* search - The search term (optional, default: none)
-* fullResponse - Forces return of full response (optional, default: false)
-
 ```js
 app.project.list({ offset: 0, limit: 100, search: 'foo', fullResponse: true })
 .then( body => /* do something */ )
+
+
+// offset           Number of files to skip before starting the list (optional, default: 0)
+// limit            Maximum number of files to list (optional, default: 100)
+// search           The search term (optional, default: none)
+// fullResponse     Forces return of full response (optional, default: false)
 ```
 
 #### Project Detail
