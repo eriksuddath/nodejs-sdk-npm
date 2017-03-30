@@ -163,34 +163,94 @@ app.project.milestones()
 
 ### File
 
+#### List Files
+
+Returns a list of project files for a given target languageId or languageCode
+
+With language Id
+```js
+const languageId = 222;
+
 app.file.list(languageId)
-* returns a list of project files for a given target languageId or languageCode
-* @params {number|string}     languageId | languageCode			The id of target language
-* @param {object}     custom     Custom object with keys explained below: (optional)
-*   @param {number}     custom.offset        Number of files to skip before starting the list (optional, default: 0)
-*   @param {number}     custom.limit     Maximum number of files to list (optional, default: 100)
-*   @param {number}     custom.fullResponse        Forces return of full response (optional, default: false)
-* @return {Promise} A Promise that is fulfilled with the API response or rejected with an error
+.then( body => /* do something */ )  
+```
+With 4 letter language code
+```js
+app.file.list('es-mx')
+.then( body => /* do something */ )  
+```
 
+With Custom Options
+```js
+app.file.list('es-mx', { limit, offset })
+.then( body => /* do something */ )  
+```
+
+#### List File Types
+
+Returns a list of the file types in a project
+
+```js
 app.file.types()
-* returns a list of the file types in a project
-* @param {object}     custom     Custom object with keys explained below: (optional)
-*   @param {number}     custom.fullResponse        Forces return of full response (optional, default: false)
-* @return {Promise} A Promise that is fulfilled with the API response or rejected with an error
+.then( body => /* do something */ )  
+```
 
-app.file.upload(filesUpload, versionTag)
-* returns a list of the file types in a project
-* @params {object|array}     filesUpload      A file object or array of file objects { path, type } || [{ path, type}, { path, type }...]
-*   @param {string}     some_file_object.path        System path to target file
-*   @param {string}     some_file_object.type        Type of file to uplaod
-* @params {string}     versionTag     A versionTag for files
+#### Upload Files
+
+Returns a list of the file types in a project
+
+Upload a single file
+```js
+const file = {
+  path: 'the_path_to_your_file',
+  type: 'JSON'
+};
+
+const versionTag = '1.0.0';
+
+app.file.upload(file, versionTag)
+.then( body => /* do something */ )
+
+```
+Unload multiple files
+
+```js
+// array of file paths
+const files = [{ path: 'path_to_file1', type: 'JSON' }, { path: 'path_to_file2', type: 'JSON' } ... ];
+
+// versionTag for all files
+const versionTag = '1.0.0';
+
+app.file.upload(files, versionTag)
+.then( body => /* do something */ )  
+```
+
+#### Export Files as a Zip
+
+Returns a link for downloading a .zip file that contains project files for a specified page and target language
+
+Export a single File
+```js
+
+const fileId = 'your_file_id';
+const languageId = 'your_language_id';
 
 app.file.export(languageId, fileIds)
-* returns a link for downloading a .zip file that contains project files for a specified page and target language
-* @params {number|string}     languageId | languageCode			The id of target language
-* @params {string|array}     fileIds			Ids of files to export
-* @param {object}     custom     Custom object with keys explained below: (optional)
-*   @param {number}     custom.fullResponse        Forces return of full response (optional, default: false)
+.then( body => /* do something */ )  
+```
+
+Export a group of files
+
+```js
+
+const filesIds = [ 420024, 902102, etc... ] ;
+const languageId = 222;
+
+app.file.export(languageId, fileIds)
+.then( body => /* do something */ )  
+```
+
+#### Update File
 
 app.file.update(fileUpdate)
 * updates a file in a project - parallel updates are not supported
