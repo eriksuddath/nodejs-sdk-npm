@@ -142,38 +142,42 @@ Pick and choose custom parameters
 * fullResponse - Forces return of full response (optional, default: false)
 
 ```js
-app.project.list({ offset, limit, search, fullResponse })
+app.project.list({ offset: 0, limit: 100, search: 'foo', fullResponse: true })
 .then( body => /* do something */ )
 ```
-* 
-* @param {object}     custom     Custom object with keys explained below: (optional)
-*   @param {number}     custom.offset      
-*   @param {number}     custom.limit     
-*   @param {string}     custom.search     
-*   @param {number}     custom.fullResponse        
-* @return {Promise} A Promise that is fulfilled with the API response or rejected with an error
 
+#### Project Detail
+
+Returns detailed information about a project
+
+```js
 app.project.detail()
-* returns detailed information about a project
-* @return {Promise} A Promise that is fulfilled with the API response or rejected with an error
-* @param {object}     custom     Custom object with keys explained below: (optional)
-*   @param {number}     custom.fullResponse        Forces return of full response (optional, default: false)
+.then( body => /* do something */ )
+```
+#### Project Status
 
+Returns the status of all projects
+
+```js
 app.project.status()
-* returns the status of all projects
-* @return {Promise} A Promise that is fulfilled with the API response or rejected with an error
-* @param {object}     custom     Custom object with keys explained below: (optional)
-*   @param {number}     custom.fullResponse        Forces return of full response (optional, default: false)
+.then( body => /* do something */ )
+```
+#### Project Workflow
 
+Returns the milestone information, status, and language for a project
+
+```js
 app.project.workflow()
-* returns the milestone information, status, and language for a project
-* @return {Promise} A Promise that is fulfilled with the API response or rejected with an error
-* @param {object}     custom     Custom object with keys explained below: (optional)
-*   @param {number}     custom.fullResponse        Forces return of full response (optional, default: false)
+.then( body => /* do something */ )
+```
+#### Project Milestones
 
+Returns the milestone information, status, and language for a project
+
+```js
 app.project.milestones()
-* returns the milestone information, status, and language for a project
-* @return {Promise} A Promise that is fulfilled with the API response or rejected with an error
+.then( body => /* do something */ )
+```
 
 ### File
 
