@@ -18,9 +18,9 @@ npm install --save qordoba-nodejs-sdk
 
 ```js
 const app = new App({ 
-  consumerKey: 'YOUR_CONSUMER_KEY', 
-  organizationId: 'YOUR_ORGANIZATION_ID', 
-  projectId: 'YOUR_PROJECT_ID' 
+  consumerKey: 'your_consumer_key', 
+  organizationId: 'your_organization_id', 
+  projectId: 'your_project_id' 
 });
 ```
 
