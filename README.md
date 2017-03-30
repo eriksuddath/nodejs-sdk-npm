@@ -52,7 +52,7 @@ app.file.segments(languageId, fileId, { limit: 1 })
 
 ### Full Response
 
-get full response by passing { fullResponse: true } as a custom option
+get full response by passing ```js{ fullResponse: true }``` as a custom option
 
 ```js
 app.ping({ fullResponse: true })
@@ -212,7 +212,7 @@ app.file.upload(file, versionTag)
 // file                 A file object or array of file objects(object or array)
 // versionTag          A versionTag for files(string)
 ```
-Unload multiple files
+Upload multiple files
 
 ```js
 // array of file paths
@@ -273,37 +273,75 @@ app.file.update(fileToUpdate)
 
 #### List File Segments
 
-app.file.segments(languageId, fileId)
-* returns a list or filtered list of the segments in a file
-* @params {number|string}     languageId | languageCode			The id of target language
-* @params {number}     fileId			The id of the file to retrieve segments
-* @param {object}     custom     Custom object with keys explained below: (optional)
-*   @param {number}     custom.offset        Number of files to skip before starting the list (optional, default: 0)
-*   @param {number}     custom.limit     Maximum number of files to list (optional, default: 100)
-*   @param {string}     custom.search     The search term (optional, default: none)
-*   @param {number}     custom.fullResponse        Forces return of full response (optional, default: false)
+Returns a list or filtered list of the segments in a file
 
+```js
+const languageId = 222;
+const fileId = 902102;
+
+app.file.segments(languageId, fileId)
+.then( body => /* do something */ )  
+
+// fileId            The id or ids of files to export (number)
+// languageId        Id of file to update(number)
+```
+
+With custom options 
+
+```js
+app.file.segments(languageId, fileId, { offset, limit, search })
+
+// offset           Number of files to skip before starting the list (optional, default: 0)
+// limit            Maximum number of files to list (optional, default: 100)
+// search           The search term (optional, default: none)
+// fullResponse     Forces return of full response (optional, default: false)
+```
+
+#### File Segment Detail
+
+Returns a file segment by its id
+
+```js
 app.file.segment(languageId, fileId, segmentId)
-* returns a file segment by its id
-* @params {number|string}     languageId | languageCode			The id of target language
-* @params {number}     fileId			The id of the file to retrieve segments
-* @params {number}     segmentId			The id of segment
-* @param {object}     custom     Custom object with keys explained below: (optional)
-*   @param {number}     custom.fullResponse        Forces return of full response (optional, default: false)
+.then( body => /* do something */ )
+
+// fileId            Id or ids of files to export (number)
+// languageId        Id of file to update(number)
+// segmentId         Id of file segment (number)
+```
+
+#### Download File As JSON
+
+Returns json object of key value pairs for specified files
+
+Downlaod a single file
+
+```js
+app.file.json(languageId, milestoneId, fileIds)
+.then( body => /* do something */ )
+
+// languageId        Id of file to update(number)
+// milestoneId       id of the milestone to download from
+// fileId            Id or ids of file(s) to download
+```
+
+Download multiple files
+
+```js
+const filesIds = [ 420024, 902102, etc... ] ;
 
 app.file.json(languageId, milestoneId, fileIds)
-* returns json object of key value pairs 
-* @params {number|string}     languageId | languageCode			The id of target language
-* @params {number}     milestoneId		The id of the milestone to get json from (see app.project.milestone)
-* @params {number}     fileId			The id of the file to retrieve segments
-* @params {number}     segmentId			The id of segment
+.then( body => /* do something */ )
+```
 
+#### Recent File Ids
 
+```js
 app.file.recent(languageId)
-* returns array of most version of files by target language
-* @params {number|string}     languageId | languageCode			The id of target language
-* @param {object}     custom     Custom object with keys explained below: (optional)
-*   @param {number}     custom.fullResponse        Forces return of full response (optional, default: false)
+.then( body => /* do something */ )
+
+// languageId        Id of file to update(number)
+```
 
 ### Directory Structure
 
