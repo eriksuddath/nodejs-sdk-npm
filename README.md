@@ -152,14 +152,6 @@ Returns the milestone information, status, and language for a project
 app.project.workflow()
 .then( body => /* do something */ )
 ```
-#### Project Milestones
-
-Returns the milestone information, status, and language for a project
-
-```js
-app.project.milestones()
-.then( body => /* do something */ )
-```
 
 ### File
 
