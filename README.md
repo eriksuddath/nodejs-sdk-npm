@@ -1,6 +1,6 @@
 # Qordoba-nodejs-sdk-npm
 
-Makes it easy to work with the Qordoba API in nodejs
+NodeJS client for interacting with the Qordoba API
 
 ## Getting Started
 
