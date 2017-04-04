@@ -196,7 +196,7 @@ class File {
 		languageId = this._getLangId(languageId);
 		const { fullResponse } = custom;
 
-		if (Array.isArray(fileIds)) { fileIds = fileIds.join(',') }
+		if (Array.isArray(fileIds)) { fileIds = fileIds.join('-') }
 		const { consumerKey, projectId } = this._config;
 
 		var options = { 
