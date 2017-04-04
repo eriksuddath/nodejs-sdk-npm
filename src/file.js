@@ -297,18 +297,20 @@ class File {
 	* @params {number}     fileId			The id of the file to retrieve segments
 	* @params {number}     segmentId			The id of segment
 	*/
-	json(languageId, milestoneId, fileIds) {
+	json(languageId, milestoneId, fileIds, custom = { offset: 0, limit: 100 }) {
 		this._validate({ languageId, milestoneId, fileIds });
 
 		languageId = this._getLangId(languageId);
 
 		const { consumerKey, projectId } = this._config;
+		const { offset, limit } = custom;
 
 		// handle multiple fileIds
 		const allOptions = [].concat(fileIds).map( (fileId) => {
 			const options = { 
 		  	url: `${BASE}/${FILE_JSON}`,
 		  	headers: { consumerKey, projectId, languageId, fileId, milestoneId },
+		  	qs: { offset, limit }
 			}
 
 			return options;
